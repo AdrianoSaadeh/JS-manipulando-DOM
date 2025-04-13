@@ -9,6 +9,10 @@ const startPauseBt = document.getElementById('start-pause')
 const musicaFocoIput = document.getElementById('alternar-musica')
 const musica = new Audio('/sons/luna-rise-part-one.mp3')
 
+const audioPlay = new Audio('/sons/play.wav');
+const audioPausa = new Audio('/sons/pause.mp3');
+const audioTempoFinalizado = new Audio('./sons/beep.mp3')
+
 let tempoDecorridoEmSegundos = 5
 let intervaloId = null
 
@@ -61,12 +65,30 @@ function alterarContexto(contexto) {
 }
 
 const contagemRegressiva = () => {
-    iniciar()
+    if (tempoDecorridoEmSegundos <= 0) {
+        audioTempoFinalizado.play()
+        alert('Tempo finalizado')
+        zerar()
+        return
+    }
     tempoDecorridoEmSegundos -= 1
+    console.log('Tempo: ' + tempoDecorridoEmSegundos)
+    console.log('Id: ' + intervaloId)
 }
 
-startPauseBt.addEventListener('click', contagemRegressiva)
+startPauseBt.addEventListener('click', iniciarOUPausar)
 
-function iniciar() {
+function iniciarOUPausar() {
+    if (intervaloId) {
+        audioPausa.play()
+        zerar()
+        return
+    }
+    audioPlay.play()
     intervaloId = setInterval(contagemRegressiva, 1000)
+}
+
+function zerar() {
+    clearInterval(intervaloId)
+    intervaloId = null
 }
